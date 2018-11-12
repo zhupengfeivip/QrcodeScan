@@ -21,16 +21,8 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp"
-        android:textStyle="bold" />
-
     <Button
-        android:id="@+id/scanBtn"
+        android:id="@+id/btnScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btnScanText" />
@@ -38,39 +30,43 @@
     <EditText
         android:id="@+id/contentEt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType=""
+        android:autofillHints="" />
 
     <Button
-        android:id="@+id/encodeBtnWithLogo"
+        android:id="@+id/btnCopy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="生成带logo的二维码" />
+        android:text="@string/btnCopy_Text" />
+
+    <Button
+        android:id="@+id/btnPaste"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnPaste_Text" />
+
+    <CheckBox
+        android:id="@+id/cbxWithLogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cbxWithLogo_Text" />
+
+
+    <Button
+        android:id="@+id/btnCreateQrcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnCreateQrcode_Text" />
 
 
     <ImageView
-        android:id="@+id/contentIvWithLogo"
+        android:id="@+id/imgQrcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
 
-        />
-
-    <Button
-        android:id="@+id/encodeBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="生成不带logo的二维码" />
-
-
-    <ImageView
-        android:id="@+id/contentIv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-
-        />
-
-
+        android:contentDescription="@string/imgQrcode_contentDescription" />
 
 
 </LinearLayout>

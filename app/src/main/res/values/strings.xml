@@ -1,7 +1,13 @@
 <resources>
-    <string name="app_name">Zxing</string>
+    <string name="app_name">二维码识别</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="btnScanText">拍照视别二维码</string>
+    <string name="btnScanText">拍照识别二维码</string>
+    <string name="btnCopy_Text">复制</string>
+    <string name="btnPaste_Text">粘贴</string>
+    <string name="cbxWithLogo_Text">是否包含logo</string>
+    <string name="toolbar_Title">扫一扫(ver1001)</string>
+    <string name="btnCreateQrcode_Text">生成二维码</string>
+    <string name="imgQrcode_contentDescription">二维码</string>
 </resources>

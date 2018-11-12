@@ -1,5 +1,7 @@
 package com.yzq.zxing;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,19 +39,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button scanBtn;
-    private TextView result;
     private EditText contentEt;
-    private Button encodeBtn;
-    private ImageView contentIv;
-    private Toolbar toolbar;
+    private ImageView imgQrcode;
     private int REQUEST_CODE_SCAN = 111;
-    /**
-     * 生成带logo的二维码
-     */
-    private Button encodeBtnWithLogo;
     private ImageView contentIvWithLogo;
-    private String contentEtString;
+    private ClipboardManager clipboard = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,42 +55,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         /*扫描按钮*/
-        scanBtn = findViewById(R.id.scanBtn);
-        scanBtn.setOnClickListener(this);
-        /*扫描结果*/
-        result = findViewById(R.id.result);
+        Button btnScan = findViewById(R.id.btnScan);
+        btnScan.setOnClickListener(this);
+
+        Button btnCopy = findViewById(R.id.btnCopy);
+        btnCopy.setOnClickListener(this);
+
+        Button btnPaste = findViewById(R.id.btnPaste);
+        btnPaste.setOnClickListener(this);
 
         /*要生成二维码的输入框*/
         contentEt = findViewById(R.id.contentEt);
         /*生成按钮*/
-        encodeBtn = findViewById(R.id.encodeBtn);
-        encodeBtn.setOnClickListener(this);
+        Button btnCreateQrcode = findViewById(R.id.btnCreateQrcode);
+        btnCreateQrcode.setOnClickListener(this);
         /*生成的图片*/
-        contentIv = findViewById(R.id.contentIv);
+        //imgQrcode = findViewById(R.id.imgQrcode);
 
-        toolbar = findViewById(R.id.toolbar);
-
-        toolbar.setTitle("扫一扫");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.toolbar_Title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        result = (TextView) findViewById(R.id.result);
-        scanBtn = (Button) findViewById(R.id.scanBtn);
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //btnScan = (Button) findViewById(R.id.scanBtn);
         contentEt = (EditText) findViewById(R.id.contentEt);
-        encodeBtnWithLogo = (Button) findViewById(R.id.encodeBtnWithLogo);
-        encodeBtnWithLogo.setOnClickListener(this);
-        contentIvWithLogo = (ImageView) findViewById(R.id.contentIvWithLogo);
-        encodeBtn = (Button) findViewById(R.id.encodeBtn);
-        contentIv = (ImageView) findViewById(R.id.contentIv);
+        //Button encodeBtnWithLogo = (Button) findViewById(R.id.encodeBtnWithLogo);
+        //encodeBtnWithLogo.setOnClickListener(this);
+        //contentIvWithLogo = (ImageView) findViewById(R.id.contentIvWithLogo);
+        //encodeBtn = (Button) findViewById(R.id.encodeBtn);
+        imgQrcode = (ImageView) findViewById(R.id.imgQrcode);
     }
 
     @Override
     public void onClick(View v) {
         Bitmap bitmap = null;
         switch (v.getId()) {
-            case R.id.scanBtn:
+            case R.id.btnScan:
                 AndPermission.with(this)
                         .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
                         .onGranted(new Action() {
@@ -133,43 +130,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }).start();
                 break;
-            case R.id.encodeBtn://生成普通二维码
-                contentEtString = contentEt.getText().toString().trim();
+            case R.id.btnCreateQrcode://生成二维码
+                imgQrcode.setImageBitmap(null);
+                String contentEtString = contentEt.getText().toString().trim();
                 if (TextUtils.isEmpty(contentEtString)) {
                     Toast.makeText(this, "请输入要生成二维码图片的字符串", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                Bitmap logo = null;
                 try {
-                    bitmap = CodeCreator.createQRCode(contentEtString, 400, 400, null);
+                    CheckBox cbxWithLogo = (CheckBox) findViewById(R.id.cbxWithLogo);
+                    if(cbxWithLogo.isChecked())
+                    {
+                        //获取Logo
+                        logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                        if (logo == null) {
+                            Toast.makeText(this, "Logo图片获取失败", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    //生成二维码
+                    bitmap = CodeCreator.createQRCode(contentEtString, 400, 400, logo);
                 } catch (WriterException e) {
+                    Toast.makeText(this, "生成二维码异常", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-                if (bitmap != null) {
-                    contentIv.setImageBitmap(bitmap);
+                if (bitmap == null) {
+                    Toast.makeText(this, "生成二维码为空", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                imgQrcode.setImageBitmap(bitmap);
                 break;
-            case R.id.encodeBtnWithLogo://生成包含Logo的二维码
+            case R.id.btnCopy://复制到剪切板
                 contentEtString = contentEt.getText().toString().trim();
                 if (TextUtils.isEmpty(contentEtString)) {
                     Toast.makeText(this, "请输入要生成二维码图片的字符串", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                bitmap = null;
-                Bitmap logo = null;
-                try {
-                    logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                    if (logo == null) {
-                        Toast.makeText(this, "Logo图片获取失败", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    bitmap = CodeCreator.createQRCode(contentEtString, 400, 400, logo);
-                } catch (WriterException e) {
-                    e.printStackTrace();
+                if (null == clipboard) {
+                    clipboard = (ClipboardManager) getSystemService(this.CLIPBOARD_SERVICE);
                 }
-                if (bitmap != null) {
-                    contentIvWithLogo.setImageBitmap(logo);
+                if (clipboard == null) {
+                    Toast.makeText(this, "clipboard is null", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                ClipData clip = ClipData.newPlainText("qrcode",contentEtString);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, "已复制到剪切板", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btnPaste://粘贴
+                if (null == clipboard) {
+                    clipboard = (ClipboardManager) getSystemService(this.CLIPBOARD_SERVICE);
+                }
+                if (clipboard == null) {
+                    Toast.makeText(this, "clipboard is null", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                StringBuilder resultString = new StringBuilder();
+                // 检查剪贴板是否有内容
+                if (!clipboard.hasPrimaryClip()) {
+                    Toast.makeText(this, "Clipboard is empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ClipData clipData = clipboard.getPrimaryClip();
+                int count = 0;
+                if (clipData != null) {
+                    count = clipData.getItemCount();
+                }
+
+                for (int i = 0; i < count; ++i) {
+                    ClipData.Item item = clipData.getItemAt(i);
+                    CharSequence str = item.coerceToText(this);
+                    resultString.append(str);
+                }
+                contentEt.setText(resultString.toString());
+                Toast.makeText(this, "粘贴成功", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Toast.makeText(this, "未知处理逻辑", Toast.LENGTH_SHORT).show();
