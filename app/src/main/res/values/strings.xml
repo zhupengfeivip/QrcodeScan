@@ -10,4 +10,5 @@
     <string name="toolbar_Title">扫一扫(ver1001)</string>
     <string name="btnCreateQrcode_Text">生成二维码</string>
     <string name="imgQrcode_contentDescription">二维码</string>
+    <string name="txtContent_hint">显示识别结果或者输入字符串</string>
 </resources>

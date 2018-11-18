@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="top|center"
     tools:context="com.yzq.zxing.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -23,7 +24,7 @@
 
     <Button
         android:id="@+id/btnScan"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btnScanText" />
 
@@ -31,18 +32,19 @@
         android:id="@+id/contentEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/txtContent_hint"
         android:inputType=""
         android:autofillHints="" />
 
     <Button
         android:id="@+id/btnCopy"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btnCopy_Text" />
 
     <Button
         android:id="@+id/btnPaste"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btnPaste_Text" />
 
