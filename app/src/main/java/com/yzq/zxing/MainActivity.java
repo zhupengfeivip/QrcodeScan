@@ -11,11 +11,13 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ import com.yzq.zxinglibrary.encode.CodeCreator;
 
 import java.util.List;
 
+import static android.view.View.GONE;
+
 
 /**
  * @author: yzq
@@ -39,11 +43,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText contentEt;
+    private EditText txtContent;
     private ImageView imgQrcode;
     private int REQUEST_CODE_SCAN = 111;
     private ImageView contentIvWithLogo;
     private ClipboardManager clipboard = null;
+    private CheckBox cbxWithLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +60,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         /*扫描按钮*/
-        Button btnScan = findViewById(R.id.btnScan);
+        final Button btnScan = findViewById(R.id.btnScan);
         btnScan.setOnClickListener(this);
 
-        Button btnCopy = findViewById(R.id.btnCopy);
+        final Button btnCopy = findViewById(R.id.btnCopy);
         btnCopy.setOnClickListener(this);
 
-        Button btnPaste = findViewById(R.id.btnPaste);
+        final Button btnPaste = findViewById(R.id.btnPaste);
         btnPaste.setOnClickListener(this);
 
         /*要生成二维码的输入框*/
-        contentEt = findViewById(R.id.contentEt);
+//        txtContent = findViewById(R.id.txtContent);
         /*生成按钮*/
-        Button btnCreateQrcode = findViewById(R.id.btnCreateQrcode);
+        final Button btnCreateQrcode = findViewById(R.id.btnCreateQrcode);
         btnCreateQrcode.setOnClickListener(this);
         /*生成的图片*/
         //imgQrcode = findViewById(R.id.imgQrcode);
@@ -77,15 +82,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        //toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //btnScan = (Button) findViewById(R.id.scanBtn);
-        contentEt = (EditText) findViewById(R.id.contentEt);
-        //Button encodeBtnWithLogo = (Button) findViewById(R.id.encodeBtnWithLogo);
-        //encodeBtnWithLogo.setOnClickListener(this);
-        //contentIvWithLogo = (ImageView) findViewById(R.id.contentIvWithLogo);
-        //encodeBtn = (Button) findViewById(R.id.encodeBtn);
+        txtContent = (EditText) findViewById(R.id.txtContent);
         imgQrcode = (ImageView) findViewById(R.id.imgQrcode);
+
+        cbxWithLogo = (CheckBox) findViewById(R.id.cbxWithLogo);
+
+        txtContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        txtContent.setEnabled(false);//默认为识别，所以默认不可编辑
+        txtContent.setHint(R.string.txtContent_verifyText);
+        btnCreateQrcode.setVisibility(View.GONE);//隐藏创建按钮
+        cbxWithLogo.setVisibility(View.GONE);
+        imgQrcode.setVisibility(View.GONE);
+        btnScan.setVisibility(View.VISIBLE);
+        btnCopy.setVisibility(View.VISIBLE);
+        btnPaste.setVisibility(View.VISIBLE);
+
+        RadioGroup rg = (RadioGroup) findViewById(R.id.rgOperType);
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if(i == R.id.rbtnVirfiy)
+                {
+                    //识别
+                    txtContent.setEnabled(false);
+                    txtContent.setHint(R.string.txtContent_verifyText);
+                    btnCreateQrcode.setVisibility(View.GONE);//隐藏创建按钮
+                    cbxWithLogo.setVisibility(View.GONE);
+                    imgQrcode.setVisibility(View.GONE);
+                    btnScan.setVisibility(View.VISIBLE);
+                    btnCopy.setVisibility(View.VISIBLE);
+                    btnPaste.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    //创建
+                    txtContent.setEnabled(true);
+                    txtContent.setHint(R.string.txtContent_createText);
+                    btnCreateQrcode.setVisibility(View.VISIBLE);//显示创建按钮
+                    cbxWithLogo.setVisibility(View.VISIBLE);
+                    imgQrcode.setVisibility(View.VISIBLE);
+                    btnScan.setVisibility(View.GONE);
+                    btnCopy.setVisibility(View.GONE);
+                    btnPaste.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @Override
@@ -132,14 +174,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnCreateQrcode://生成二维码
                 imgQrcode.setImageBitmap(null);
-                String contentEtString = contentEt.getText().toString().trim();
+                String contentEtString = txtContent.getText().toString().trim();
                 if (TextUtils.isEmpty(contentEtString)) {
                     Toast.makeText(this, "请输入要生成二维码图片的字符串", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Bitmap logo = null;
                 try {
-                    CheckBox cbxWithLogo = (CheckBox) findViewById(R.id.cbxWithLogo);
                     if(cbxWithLogo.isChecked())
                     {
                         //获取Logo
@@ -162,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 imgQrcode.setImageBitmap(bitmap);
                 break;
             case R.id.btnCopy://复制到剪切板
-                contentEtString = contentEt.getText().toString().trim();
+                contentEtString = txtContent.getText().toString().trim();
                 if (TextUtils.isEmpty(contentEtString)) {
                     Toast.makeText(this, "请输入要生成二维码图片的字符串", Toast.LENGTH_SHORT).show();
                     return;
@@ -204,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     CharSequence str = item.coerceToText(this);
                     resultString.append(str);
                 }
-                contentEt.setText(resultString.toString());
+                txtContent.setText(resultString.toString());
                 Toast.makeText(this, "粘贴成功", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -223,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 //result.setText("扫描结果为：" + content);
-                contentEt.setText(content);
+                txtContent.setText(content);
             }
         }
     }
