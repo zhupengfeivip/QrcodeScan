@@ -7,11 +7,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -46,9 +49,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText txtContent;
     private ImageView imgQrcode;
     private int REQUEST_CODE_SCAN = 111;
-    private ImageView contentIvWithLogo;
+//    private ImageView contentIvWithLogo;
     private ClipboardManager clipboard = null;
     private CheckBox cbxWithLogo;
+    boolean isExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,5 +272,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    public void exit(){
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+            System.exit(0);
+        }
+    }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+
 
 }

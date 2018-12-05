@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,7 +7,11 @@
     android:orientation="vertical"
     android:gravity="top|center"
     tools:context="com.yzq.zxing.MainActivity">
-
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,76 +26,89 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <RadioGroup
-        android:id="@+id/rgOperType"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@+id/rbtnVirfiy">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableRow android:gravity="center">
 
-        <RadioButton
-            android:id="@+id/rbtnVirfiy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rbtnVerify_text" />
+                <RadioGroup
+                    android:id="@+id/rgOperType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:checkedButton="@+id/rbtnVirfiy"
+                    android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/rbtnCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rbtnCreate_text" />
-    </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/rbtnVirfiy"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rbtnVerify_text" />
 
-    <Button
-        android:id="@+id/btnScan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnScanText" />
+                    <RadioButton
+                        android:id="@+id/rbtnCreate"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rbtnCreate_text" />
+                </RadioGroup>
+            </TableRow>
 
-    <EditText
-        android:id="@+id/txtContent"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:autofillHints=""
-        android:hint="@string/txtContent_hint"
-        android:inputType=""
-        android:scrollbars="vertical"/>
+            <Button
+                style="@style/btnStyle"
+                android:id="@+id/btnScan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btnScanText" />
+            <EditText
+                android:id="@+id/txtContent"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:autofillHints=""
+                android:enabled="false"
+                android:hint="@string/txtContent_hint"
+                android:inputType=""
+                android:scrollbars="vertical"
+                style="@style/testStyle"/>
 
-    <Button
-        android:id="@+id/btnCopy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnCopy_Text" />
+            <TableRow android:gravity="center">
 
-    <Button
-        android:id="@+id/btnPaste"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnPaste_Text" />
+                <Button
+                    android:id="@+id/btnCopy"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    style=""
+                    android:text="@string/btnCopy_Text" />
 
-    <CheckBox
-        android:id="@+id/cbxWithLogo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cbxWithLogo_Text" />
-
-
-    <Button
-        android:id="@+id/btnCreateQrcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnCreateQrcode_Text" />
-
-
-    <ImageView
-        android:id="@+id/imgQrcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-
-        android:contentDescription="@string/imgQrcode_contentDescription" />
+                <Button
+                    android:id="@+id/btnPaste"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btnPaste_Text" />
+            </TableRow>
+            <CheckBox
+                android:id="@+id/cbxWithLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cbxWithLogo_Text" />
 
 
+            <Button
+                android:id="@+id/btnCreateQrcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btnCreateQrcode_Text" />
+
+
+            <ImageView
+                android:id="@+id/imgQrcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/imgQrcode_contentDescription" />
+        </TableLayout>
+    </LinearLayout>
 </LinearLayout>
