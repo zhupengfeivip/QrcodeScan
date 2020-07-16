@@ -11,4 +11,8 @@
     <string name="btnCreateQrcode_Text">生成二维码</string>
     <string name="imgQrcode_contentDescription">二维码</string>
     <string name="txtContent_hint">显示识别结果或者输入字符串</string>
+    <string name="rbtnVerify_text">识别</string>
+    <string name="rbtnCreate_text">生成</string>
+    <string name="txtContent_verifyText">显示识别结果</string>
+    <string name="txtContent_createText">输入要生成的字符串</string>
 </resources>
